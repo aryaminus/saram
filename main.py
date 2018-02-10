@@ -16,6 +16,12 @@ def main(path):
 	if call(['which', 'tesseract']): #Run the command described by args
     	print("tesseract-ocr missing")
     elif check_path(path):
+        directory_path = path + '/OCR-text/' #Create text_conversion folder
+
+        count = 0
+		other_files = 0
+
+        for f in os.listdir(path): #return list of files in path directory
     
 
 if __name__ == '__main__': #Execute all code before reading source file, ie. execute import, evaluate def to equal name to main
