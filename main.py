@@ -11,6 +11,10 @@ class ArgumentMissingException(Exception):
         print("usage: {} <dirname>".format(sys.argv[0]))
         sys.exit(1)
 
+def create_directory(path):
+    if not os.path.exists(path): #No path
+	    os.makedirs(path) #Create path
+
 def check_path(path):
     	return bool(os.path.exists(path)) #Checkif path exists
 
@@ -29,7 +33,14 @@ def main(path):
             if ext.lower() not in VALIDITY: #Convert to lowercase and check in validity list
     			other_files += 1 #Increment if other than validity extension found
 				continue
-    
+			else :
+                if count == 0: #No directory created
+					create_directory(directory_path) #function to create directory
+                count += 1
+
+                image_file_name = path + '/' + f #Full /dir/path/filename.extension
+                filename = os.path.splitext(f)[0] #Filename without extension
+                
 
 if __name__ == '__main__': #Execute all code before reading source file, ie. execute import, evaluate def to equal name to main
 	if len(sys.argv) != 2: # Count number of arguments which contains the command-line arguments passed to the script if it is not equal to 2 ie for (py main.py 1_arg 2_arg)
