@@ -2,6 +2,8 @@ import os
 import sys
 from subprocess import call
 
+VALIDITY = [".jpg",".gif",".png",".tga",".tif",".bmp"]
+
 FNULL = open(os.devnull, 'w') #Open file in write mode to The file path of the null device. For example: '/dev/null' 
 
 class ArgumentMissingException(Exception):
@@ -23,7 +25,10 @@ def main(path):
 
         for f in os.listdir(path): #Return list of files in path directory
             ext = os.path.splitext(f)[1] #Split the pathname path into a pair i.e take .png/ .jpg etc
-            
+
+            if ext.lower() not in VALIDITY: #Convert to lowercase and check in validity list
+    			other_files += 1 #Increment if other than validity extension found
+				continue
     
 
 if __name__ == '__main__': #Execute all code before reading source file, ie. execute import, evaluate def to equal name to main
