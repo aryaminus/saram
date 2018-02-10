@@ -21,7 +21,7 @@ def check_path(path):
 def main(path):
 	if call(['which', 'tesseract']): #Run the command described by args
     	print("tesseract-ocr missing") #No tesseract installed
-        
+
     elif check_path(path):
         directory_path = path + '/OCR-text/' #Create text_conversion folder
 
@@ -47,7 +47,10 @@ def main(path):
 
                 call(["tesseract", image_file_name, text_file_path], stdout=FNULL) #Fetch tesseract with FNULL in write mode
 
-
+                print(str(count) + (" file" if count == 1 else " files") + " processed")
+        
+        if count + other_files == 0:
+    		print("No files found") #No files found
 
 
 if __name__ == '__main__': #Execute all code before reading source file, ie. execute import, evaluate def to equal name to main
