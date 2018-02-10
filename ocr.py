@@ -34,3 +34,14 @@ elif args["preprocess"] == "blur":
 # apply OCR to it
 filename = "{}.png".format(os.getpid())
 cv2.imwrite(filename, gray)
+
+# load the image as a PIL/Pillow image, apply OCR, and then delete
+# the temporary file
+text = pytesseract.image_to_string(Image.open(filename))
+os.remove(filename)
+print(text)
+ 
+# show the output images
+cv2.imshow("Image", image)
+cv2.imshow("Output", gray)
+cv2.waitKey(0)
