@@ -21,7 +21,9 @@ def main(path):
         count = 0
 		other_files = 0
 
-        for f in os.listdir(path): #return list of files in path directory
+        for f in os.listdir(path): #Return list of files in path directory
+            ext = os.path.splitext(f)[1] #Split the pathname path into a pair i.e take .png/ .jpg etc
+            
     
 
 if __name__ == '__main__': #Execute all code before reading source file, ie. execute import, evaluate def to equal name to main
