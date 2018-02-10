@@ -20,7 +20,8 @@ def check_path(path):
 
 def main(path):
 	if call(['which', 'tesseract']): #Run the command described by args
-    	print("tesseract-ocr missing")
+    	print("tesseract-ocr missing") #No tesseract installed
+        
     elif check_path(path):
         directory_path = path + '/OCR-text/' #Create text_conversion folder
 
@@ -39,8 +40,15 @@ def main(path):
                 count += 1
 
                 image_file_name = path + '/' + f #Full /dir/path/filename.extension
-                filename = os.path.splitext(f)[0] #Filename without extension
                 
+                filename = os.path.splitext(f)[0] #Filename without extension
+                filename = ''.join(e for e in filename if e.isalnum() or e == '-') #Join string of filename if it contains alphanumeric characters or -
+                text_file_path = directory_path + filename #Join dir_path with file_name
+
+                call(["tesseract", image_file_name, text_file_path], stdout=FNULL) #Fetch tesseract with FNULL in write mode
+
+
+
 
 if __name__ == '__main__': #Execute all code before reading source file, ie. execute import, evaluate def to equal name to main
 	if len(sys.argv) != 2: # Count number of arguments which contains the command-line arguments passed to the script if it is not equal to 2 ie for (py main.py 1_arg 2_arg)
