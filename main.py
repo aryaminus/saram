@@ -1,5 +1,6 @@
 import os
 import sys
+import time
 from subprocess import call
 
 from wand.image import Image
@@ -46,9 +47,15 @@ def main(path):
                 filename = ''.join(e for e in filename if e.isalnum() or e == '-') #Join string of filename if it contains alphanumeric characters or -
                 text_file_path = directory_path + filename #Join dir_path with file_name
 
-                if ext.lower() == ".pdf":
-                    image_pdf = Image(filename=filename)
-                    image_page = image_pdf.convert("png")
+                if ext.lower() == ".pdf": #For PDF
+                    image_pdf = Image(filename=filename) #take filename
+                    image_page = image_pdf.convert("png") #png conversion
+
+                    page = 1 #init page
+                    process_start = time.time() #Return current time
+
+                    for img in image_page.sequence: # Every single image in image_page
+                        
 
                 call(["tesseract", image_file_name, text_file_path], stdout=FNULL) #Fetch tesseract with FNULL in write mode
 
