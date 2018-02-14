@@ -54,8 +54,11 @@ def main(path):
                     page = 1 #init page
                     process_start = time.time() #Return current time
 
-                    for img in image_page.sequence: # Every single image in image_page
-                        
+                    for img in image_page.sequence: # Every single image in image_page for grayscale conversion in 300 resolution
+                        img_per_page = Image(image=img)
+                        img_per_page.type = 'grayscale'
+                        img_per_page.depth = 8
+                        img_per_page.density = 300
 
                 call(["tesseract", image_file_name, text_file_path], stdout=FNULL) #Fetch tesseract with FNULL in write mode
 
