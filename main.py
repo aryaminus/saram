@@ -2,7 +2,9 @@ import os
 import sys
 from subprocess import call
 
-VALIDITY = [".jpg",".gif",".png",".tga",".tif",".bmp"]
+from wand.image import Image
+
+VALIDITY = [".jpg",".gif",".png",".tga",".tif",".bmp", ".pdf"]
 
 FNULL = open(os.devnull, 'w') #Open file in write mode to The file path of the null device. For example: '/dev/null' 
 
@@ -30,7 +32,7 @@ def main(path):
         for f in os.listdir(path): #Return list of files in path directory
             ext = os.path.splitext(f)[1] #Split the pathname path into a pair i.e take .png/ .jpg etc
 
-            if ext.lower() not in VALIDITY: #Convert to lowercase and check in validity list
+            if ext.lower() not in VALIDITY: #Convert to lowercase and check in validity list          
                 other_files += 1 #Increment if other than validity extension found
                 continue
             else :
@@ -43,6 +45,10 @@ def main(path):
                 filename = os.path.splitext(f)[0] #Filename without extension
                 filename = ''.join(e for e in filename if e.isalnum() or e == '-') #Join string of filename if it contains alphanumeric characters or -
                 text_file_path = directory_path + filename #Join dir_path with file_name
+
+                if ext.lower() == ".pdf":
+                    image_pdf = Image(filename=filename)
+                    image_page = image_pdf.convert("png")
 
                 call(["tesseract", image_file_name, text_file_path], stdout=FNULL) #Fetch tesseract with FNULL in write mode
 
