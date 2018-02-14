@@ -60,6 +60,26 @@ def main(path):
                         img_per_page.depth = 8
                         img_per_page.density = 300
 
+                        try:
+                            img_per_page.level(black=0.3, white=1.0, gamma=1.5, channel=None)
+                        
+                        except AttributeError as e:
+                            print("Update Wand library: %s" % e)
+                        
+                        img_per_page.save(filename="buffer.png")
+
+                        page_start = time.time()
+                        txt = self.image2txt_pyocr(img_per_page.make_blob(imageformat), do_orientation)
+
+                        page_elaboration = time.time() - page_start
+
+                        print("page %s - size %s - process %2d sec. - text %s" %
+                            (page, img_per_page.size, page_elaboration, len(txt)))
+                            
+                        final_text += "%s\n" % txt
+                        page += 1
+                        img.destroy()
+
                 call(["tesseract", image_file_name, text_file_path], stdout=FNULL) #Fetch tesseract with FNULL in write mode
 
                 print(str(count) + (" file" if count == 1 else " files") + " processed")
