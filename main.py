@@ -48,13 +48,16 @@ def main(path):
                 text_file_path = directory_path + filename #Join dir_path with file_name
 
                 if ext.lower() == ".pdf": #For PDF
-                    image_pdf = Image(filename=filename) #take filename
+                    print("Got pdf")
+                    
+                    image_pdf = Image(filename=image_file_name) #take filename
                     image_page = image_pdf.convert("png") #png conversion
 
                     page = 1 #init page
                     process_start = time.time() #Return current time
 
                     for img in image_page.sequence: # Every single image in image_page for grayscale conversion in 300 resolution
+                        
                         img_per_page = Image(image=img)
                         img_per_page.type = 'grayscale'
                         img_per_page.depth = 8
@@ -83,11 +86,11 @@ def main(path):
 
                         process_end = time.time() - process_start
                         print("Total elaboration time: %s" % process_end)
-
+  
                 call(["tesseract", image_file_name, text_file_path], stdout=FNULL) #Fetch tesseract with FNULL in write mode
 
                 print(str(count) + (" file" if count == 1 else " files") + " processed")
-        
+                
         if count + other_files == 0:
             print("No files found") #No files found
         else :
