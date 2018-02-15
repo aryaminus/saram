@@ -80,6 +80,11 @@ def main(path):
                         page += 1
                         img.destroy()
 
+                        process_end = time.time() - process_start
+                        print("Total elaboration time: %s" % process_end)
+
+                        return final_text
+
                 call(["tesseract", image_file_name, text_file_path], stdout=FNULL) #Fetch tesseract with FNULL in write mode
 
                 print(str(count) + (" file" if count == 1 else " files") + " processed")
