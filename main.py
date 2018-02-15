@@ -69,21 +69,20 @@ def main(path):
                         img_per_page.save(filename="buffer.png")
 
                         page_start = time.time()
-                        txt = self.image2txt_pyocr(img_per_page.make_blob(imageformat), do_orientation)
+
+                        #txt = self.image2txt_pyocr(img_per_page.make_blob(imageformat), do_orientation)
+
+                        call(["tesseract", "buffer.png", text_file_path], stdout=FNULL) #Fetch tesseract with FNULL in write mode
 
                         page_elaboration = time.time() - page_start
 
-                        print("page %s - size %s - process %2d sec. - text %s" %
-                            (page, img_per_page.size, page_elaboration, len(txt)))
+                        print("page %s - size %s - process %2d sec." % (page, img_per_page.size, page_elaboration))
                             
-                        final_text += "%s\n" % txt
                         page += 1
                         img.destroy()
 
                         process_end = time.time() - process_start
                         print("Total elaboration time: %s" % process_end)
-
-                        return final_text
 
                 call(["tesseract", image_file_name, text_file_path], stdout=FNULL) #Fetch tesseract with FNULL in write mode
 
