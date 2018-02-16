@@ -76,10 +76,7 @@ class saram(object):
 
             page_start = time.time()
 
-            image_blob = img_per_page.make_blob("png")
-            img_per_page = PI.open(io.BytesIO(image_blob))
-
-            self.img_run(img_per_page, text_file_path)
+            self.img_run(img_per_page.make_blob("png"), text_file_path)
 
             page_elaboration = time.time() - page_start
 
@@ -91,8 +88,10 @@ class saram(object):
         process_end = time.time() - process_start
         print("Total elaboration time: %s" % process_end)
     
-    def img_run(self, image_file_name, text_file_path):
+    def img_run(self, image, text_file_path):
         
+        image_file_name = PI.open(io.BytesIO(image))
+
         try:
             if self.tool.can_detect_orientation():
                 
@@ -134,8 +133,12 @@ class saram(object):
                     if ext.lower() == ".pdf": #For PDF
                         self.pdf_run(image_file_name, text_file_path, filename)
                     
-                    else: #For Img
-                        self.img_run(image_file_name, text_file_path)
+                    with Image(filename=image_file_name) as img:
+                        img.type = 'grayscale'
+                        img.save(filename=image_file_name)
+
+                    #self.img_run(image_file_name.make_blob("png"), text_file_path)
+                    call(["tesseract", image_file_name, text_file_path], stdout=FNULL) #Fetch tesseract with FNULL in write mode
 
                     print(str(count) + (" file" if count == 1 else " files") + " processed")
                 
