@@ -4,10 +4,10 @@ import sys
 import time
 from subprocess import call
 
+import pyocr
+import pyocr.builders
 from PIL import Image as PI
 from wand.image import Image
-
-import pyocr
 
 VALIDITY = [".jpg",".gif",".png",".tga",".tif",".bmp", ".pdf"]
 
@@ -25,7 +25,7 @@ class saram(object):
     
     def __init__(self):
         
-        ocr_language = "eng"
+        ocr_language = 'eng'
 
         if call(['which', 'tesseract']): #Run the command described by args
             print("tesseract-ocr missing") #No tesseract installed
@@ -108,8 +108,8 @@ class saram(object):
 
         call(["tesseract", image_file_name, text_file_path], stdout=FNULL) #Fetch tesseract with FNULL in write mode
         
-    def main(self,path):
-        if check_path(path):
+    def main(self, path):
+        if bool(os.path.exists(path)):
             directory_path = path + '/OCR-text/' #Create text_conversion folder
             count = 0
             other_files = 0
