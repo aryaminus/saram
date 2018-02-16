@@ -1,8 +1,10 @@
+import io
 import os
 import sys
 import time
 from subprocess import call
 
+from PIL import Image as PI
 from wand.image import Image
 
 VALIDITY = [".jpg",".gif",".png",".tga",".tif",".bmp", ".pdf"]
@@ -36,6 +38,7 @@ def main(path):
             if ext.lower() not in VALIDITY: #Convert to lowercase and check in validity list          
                 other_files += 1 #Increment if other than validity extension found
                 continue
+
             else :
                 if count == 0: #No directory created
                     create_directory(directory_path) #function to create directory
@@ -48,13 +51,14 @@ def main(path):
                 text_file_path = directory_path + filename #Join dir_path with file_name
 
                 if ext.lower() == ".pdf": #For PDF
+
                     print("Got pdf")
                     
                     image_pdf = Image(filename=image_file_name) #take filename
                     image_page = image_pdf.convert("png") #png conversion
 
                     page = 1 #init page
-                    process_start = time.time() #Return current time
+                    #process_start = time.time() #Return current time
 
                     for img in image_page.sequence: # Every single image in image_page for grayscale conversion in 300 resolution
                         
@@ -68,24 +72,45 @@ def main(path):
                         
                         except AttributeError as e:
                             print("Update Wand library: %s" % e)
+
+                        img_buf = path + '/' + filename +".png"
+
+                        img_per_page.save(filename=img_buf)
+
+                        #page_start = time.time()
+
+                        image_blob = img_per_page.make_blob("png")
+                        img_per_page = PI.open(io.BytesIO(image_blob))
+
+                        try:
+                            if self.tool.can_detect_orientation():
+                                orientation = self.tool.detect_orientation(img_per_page, lang=self.lang)
+                                angle = orientation["angle"]
+                                if angle != 0:
+                                    img_per_page.rotate(orientation["angle"])
+                        except pyocr.PyocrException as exc:
+                            print("Orientation detection failed: {}".format(exc))
+                        print("Orientation: {}".format(orientation))
+
+                        try:
+                            txt = self.tool.image_to_string(
+                                img_per_page, lang=self.lang,
+                                builder=pyocr.builders.TextBuilder()
+                            )
+                        except pyocr.error.TesseractError as e:
+                            print("{}".format(e))
                         
-                        img_per_page.save(filename="buffer.png")
+                        call(["tesseract", img_buf, text_file_path], stdout=FNULL) #Fetch tesseract with FNULL in write mode
 
-                        page_start = time.time()
+                        #page_elaboration = time.time() - page_start
 
-                        #txt = self.image2txt_pyocr(img_per_page.make_blob(imageformat), do_orientation)
-
-                        call(["tesseract", "buffer.png", text_file_path], stdout=FNULL) #Fetch tesseract with FNULL in write mode
-
-                        page_elaboration = time.time() - page_start
-
-                        print("page %s - size %s - process %2d sec." % (page, img_per_page.size, page_elaboration))
+                        #print("page %s - size %s - process %2d sec." % (page, img_per_page.size, page_elaboration))
                             
                         page += 1
-                        img.destroy()
+                        #img.destroy()
 
-                        process_end = time.time() - process_start
-                        print("Total elaboration time: %s" % process_end)
+                    #process_end = time.time() - process_start
+                    #print("Total elaboration time: %s" % process_end)
   
                 call(["tesseract", image_file_name, text_file_path], stdout=FNULL) #Fetch tesseract with FNULL in write mode
 
