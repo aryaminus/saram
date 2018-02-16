@@ -18,17 +18,14 @@ class ArgumentMissingException(Exception):
         print("usage: {} <dirname>".format(sys.argv[0]))
         sys.exit(1)
 
-def check_path(path):
-    	return bool(os.path.exists(path)) #Checkif path exists
-
 class saram(object):
     
     def __init__(self):
         
         ocr_language = 'eng'
 
-        if call(['which', 'tesseract']): #Run the command described by args
-            print("tesseract-ocr missing") #No tesseract installed
+        #if call(['which', 'tesseract']): #Run the command described by args
+        #    print("tesseract-ocr missing") #No tesseract installed
         
         tools = pyocr.get_available_tools()
         if len(tools) == 0:
@@ -76,7 +73,10 @@ class saram(object):
 
             page_start = time.time()
 
-            self.img_run(img_per_page.make_blob("png"), text_file_path)
+            #img_ori = self.orientation_check(img_per_page.make_blob("png"))
+            #self.img_run(img_ori, text_file_path)
+
+            call(["tesseract", image_file_name, text_file_path], stdout=FNULL) #Fetch tesseract with FNULL in write mode
 
             page_elaboration = time.time() - page_start
 
@@ -88,23 +88,26 @@ class saram(object):
         process_end = time.time() - process_start
         print("Total elaboration time: %s" % process_end)
     
-    def img_run(self, image, text_file_path):
-        
-        image_file_name = PI.open(io.BytesIO(image))
+    def orientation_check(self, image):
+        orientation = ""
+        ori_check = PI.open(io.BytesIO(image))
 
         try:
             if self.tool.can_detect_orientation():
-                
-                orientation = self.tool.detect_orientation(image_file_name, lang=self.lang)
+                orientation = self.tool.detect_orientation(ori_check, lang=self.lang)
                 angle = orientation["angle"]
+
                 if angle != 0:
-                    image_file_name.rotate(orientation["angle"])
+                    ori_check.rotate(orientation["angle"])
 
         except pyocr.PyocrException as exc:
             print("Orientation detection failed: {}".format(exc))
 
         print("Orientation: {}".format(orientation))
 
+        return ori_check
+
+    def img_run(self, image_file_name, text_file_path):
         call(["tesseract", image_file_name, text_file_path], stdout=FNULL) #Fetch tesseract with FNULL in write mode
         
     def main(self, path):
@@ -133,12 +136,14 @@ class saram(object):
                     if ext.lower() == ".pdf": #For PDF
                         self.pdf_run(image_file_name, text_file_path, filename)
                     
+                    """
                     with Image(filename=image_file_name) as img:
                         img.type = 'grayscale'
                         img.save(filename=image_file_name)
+                    """
 
-                    #self.img_run(image_file_name.make_blob("png"), text_file_path)
-                    call(["tesseract", image_file_name, text_file_path], stdout=FNULL) #Fetch tesseract with FNULL in write mode
+                    self.img_run(image_file_name, text_file_path)
+                    #call(["tesseract", image_file_name, text_file_path], stdout=FNULL) #Fetch tesseract with FNULL in write mode
 
                     print(str(count) + (" file" if count == 1 else " files") + " processed")
                 
