@@ -47,7 +47,7 @@ class saram(object):
         if not os.path.exists(path): #No path
 	        os.makedirs(path) #Create path
     
-    def pdf_run(self, image_file_name, text_file_path, filename):
+    def pdf_run(self, image_file_name, filename):
         
         image_pdf = Image(filename=image_file_name) #take filename
         image_page = image_pdf.convert("png") #png conversion
@@ -76,7 +76,7 @@ class saram(object):
             #img_ori = self.orientation_check(img_per_page.make_blob("png"))
             #self.img_run(img_ori, text_file_path)
 
-            call(["tesseract", image_file_name, text_file_path], stdout=FNULL) #Fetch tesseract with FNULL in write mode
+            #call(["tesseract", image_file_name, text_file_path], stdout=FNULL) #Fetch tesseract with FNULL in write mode
 
             page_elaboration = time.time() - page_start
 
@@ -115,37 +115,40 @@ class saram(object):
             directory_path = path + '/OCR-text/' #Create text_conversion folder
             count = 0
             other_files = 0
-            for f in os.listdir(path): #Return list of files in path directory
+
+            for f in os.listdir(path):
                 ext = os.path.splitext(f)[1] #Split the pathname path into a pair i.e take .png/ .jpg etc
+
+                if ext.lower() == ".pdf": #For PDF
+                    image_file_name = path + '/' + f #Full /dir/path/filename.extension
+                    filename = os.path.splitext(f)[0] #Filename without extension
+                    filename = ''.join(e for e in filename if e.isalnum() or e == '-') #Join string of filename if it contains alphanumeric characters or -
+                    self.pdf_run(image_file_name, filename)
+
+            for f in os.listdir(path): #Return list of files in path directory
+
+                ext = os.path.splitext(f)[1] #Split the pathname path into a pair i.e take .png/ .jpg etc
+                
+                image_file_name = path + '/' + f #Full /dir/path/filename.extension
+                filename = os.path.splitext(f)[0] #Filename without extension
+                filename = ''.join(e for e in filename if e.isalnum() or e == '-') #Join string of filename if it contains alphanumeric characters or -
+                text_file_path = directory_path + filename #Join dir_path with file_name
 
                 if ext.lower() not in VALIDITY: #Convert to lowercase and check in validity list          
                     other_files += 1 #Increment if other than validity extension found
                     continue
 
-                else :
-                    if count == 0: #No directory created
-                        self.create_directory(directory_path) #function to create directory
-                    count += 1
+                if count == 0: #No directory created
+                    self.create_directory(directory_path) #function to create directory
+                count += 1
 
-                    image_file_name = path + '/' + f #Full /dir/path/filename.extension
-                    
-                    filename = os.path.splitext(f)[0] #Filename without extension
-                    filename = ''.join(e for e in filename if e.isalnum() or e == '-') #Join string of filename if it contains alphanumeric characters or -
-                    text_file_path = directory_path + filename #Join dir_path with file_name
+                #self.img_run(image_file_name, text_file_path)
+                if ext.lower() == ".pdf": #For PDF
+                    continue
+                else:
+                    call(["tesseract", image_file_name, text_file_path], stdout=FNULL) #Fetch tesseract with FNULL in write mode
 
-                    if ext.lower() == ".pdf": #For PDF
-                        self.pdf_run(image_file_name, text_file_path, filename)
-                    
-                    """
-                    with Image(filename=image_file_name) as img:
-                        img.type = 'grayscale'
-                        img.save(filename=image_file_name)
-                    """
-
-                    self.img_run(image_file_name, text_file_path)
-                    #call(["tesseract", image_file_name, text_file_path], stdout=FNULL) #Fetch tesseract with FNULL in write mode
-
-                    print(str(count) + (" file" if count == 1 else " files") + " processed")
+                print(str(count) + (" file" if count == 1 else " files") + " processed")
                 
             if count + other_files == 0:
                 print("No files found") #No files found
