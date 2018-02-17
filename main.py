@@ -1,12 +1,14 @@
 import io
 import os
+import subprocess
 import sys
 import time
 from subprocess import call
 
+import PIL.Image as Im
 import pyocr
 import pyocr.builders
-from PIL import Image as PI
+from PIL import Image as Im
 from wand.image import Image
 
 VALIDITY = [".jpg",".gif",".png",".tga",".tif",".bmp", ".pdf"]
@@ -73,11 +75,6 @@ class saram(object):
 
             page_start = time.time()
 
-            #img_ori = self.orientation_check(img_per_page.make_blob("png"))
-            #self.img_run(img_ori, text_file_path)
-
-            #call(["tesseract", image_file_name, text_file_path], stdout=FNULL) #Fetch tesseract with FNULL in write mode
-
             page_elaboration = time.time() - page_start
 
             print("page %s - size %s - process %2d sec." % (page, img_per_page.size, page_elaboration))
@@ -88,27 +85,21 @@ class saram(object):
         process_end = time.time() - process_start
         print("Total elaboration time: %s" % process_end)
     
-    def orientation_check(self, image):
-        orientation = ""
-        ori_check = PI.open(io.BytesIO(image))
+    def get_rotation_info(self, filename):
+        stdoutdata = subprocess.getoutput("tesseract" + filename + ' %s - -psm 0')
+        degrees = None
 
-        try:
-            if self.tool.can_detect_orientation():
-                orientation = self.tool.detect_orientation(ori_check, lang=self.lang)
-                angle = orientation["angle"]
+        for line in stdoutdata.splitlines():
+            info = 'Orientation in degrees: '
+            if info in line:
+                degrees = -float(line.replace(info, '').strip())
+        return degrees
 
-                if angle != 0:
-                    ori_check.rotate(orientation["angle"])
-
-        except pyocr.PyocrException as exc:
-            print("Orientation detection failed: {}".format(exc))
-
-        print("Orientation: {}".format(orientation))
-
-        return ori_check
-
-    def img_run(self, image_file_name, text_file_path):
-        call(["tesseract", image_file_name, text_file_path], stdout=FNULL) #Fetch tesseract with FNULL in write mode
+    def fix_dpi_and_rotation(self, filename, degrees, ext):
+        im1 = Im.open(filename)
+        print('Fixing rotation %.2f in %s...' % (degrees, filename))
+        im1.rotate(degrees).save('../%s' % filename,
+                                ext, quality=97, dpi = (300, 300))
         
     def main(self, path):
         if bool(os.path.exists(path)):
@@ -125,6 +116,20 @@ class saram(object):
                     filename = ''.join(e for e in filename if e.isalnum() or e == '-') #Join string of filename if it contains alphanumeric characters or -
                     self.pdf_run(image_file_name, filename)
 
+            for f in os.listdir(path):
+                ext = os.path.splitext(f)[1] #Split the pathname path into a pair i.e take .png/ .jpg etc
+
+                if ext.lower() not in VALIDITY: #Convert to lowercase and check in validity list          
+                    other_files += 1 #Increment if other than validity extension found
+                    continue
+                
+                else:
+                    image_file_name = path + '/' + f #Full /dir/path/filename.extension
+                    
+                    degrees = self.get_rotation_info(image_file_name)
+                    if degrees:
+                        self.fix_dpi_and_rotation(image_file_name, degrees, ext)
+
             for f in os.listdir(path): #Return list of files in path directory
 
                 ext = os.path.splitext(f)[1] #Split the pathname path into a pair i.e take .png/ .jpg etc
@@ -134,10 +139,6 @@ class saram(object):
                 filename = ''.join(e for e in filename if e.isalnum() or e == '-') #Join string of filename if it contains alphanumeric characters or -
                 text_file_path = directory_path + filename #Join dir_path with file_name
 
-                if ext.lower() not in VALIDITY: #Convert to lowercase and check in validity list          
-                    other_files += 1 #Increment if other than validity extension found
-                    continue
-
                 if count == 0: #No directory created
                     self.create_directory(directory_path) #function to create directory
                 count += 1
@@ -145,14 +146,20 @@ class saram(object):
                 #self.img_run(image_file_name, text_file_path)
                 if ext.lower() == ".pdf": #For PDF
                     continue
+
                 else:
+                    degrees = self.get_rotation_info(image_file_name)
+
+                    if degrees:
+                        self.fix_dpi_and_rotation(image_file_name, degrees, ext)
+                    
                     call(["tesseract", image_file_name, text_file_path], stdout=FNULL) #Fetch tesseract with FNULL in write mode
 
                 print(str(count) + (" file" if count == 1 else " files") + " processed")
             
             for f in os.listdir(path):
                  if f.startswith("saram_"):
-                      os.remove(os.path.join(path, f))
+                    os.remove(os.path.join(path, f))
 
             if count + other_files == 0:
                 print("No files found") #No files found
