@@ -86,10 +86,12 @@ class saram(object):
         print("Total elaboration time: %s" % process_end)
     
     def get_rotation_info(self, filename):
-        stdoutdata = subprocess.getoutput("tesseract" + filename + ' %s - -psm 0')
+        arguments = ' %s - -psm 0'
+        stdoutdata = subprocess.getoutput('tesseract' + arguments % filename)
         degrees = None
 
         for line in stdoutdata.splitlines():
+            print(line)
             info = 'Orientation in degrees: '
             if info in line:
                 degrees = -float(line.replace(info, '').strip())
@@ -98,8 +100,7 @@ class saram(object):
     def fix_dpi_and_rotation(self, filename, degrees, ext):
         im1 = Im.open(filename)
         print('Fixing rotation %.2f in %s...' % (degrees, filename))
-        im1.rotate(degrees).save('../%s' % filename,
-                                ext, quality=97, dpi = (300, 300))
+        im1.rotate(degrees).save(filename)
         
     def main(self, path):
         if bool(os.path.exists(path)):
@@ -119,14 +120,14 @@ class saram(object):
             for f in os.listdir(path):
                 ext = os.path.splitext(f)[1] #Split the pathname path into a pair i.e take .png/ .jpg etc
 
-                if ext.lower() not in VALIDITY: #Convert to lowercase and check in validity list          
-                    other_files += 1 #Increment if other than validity extension found
+                if ext.lower() == ".pdf": #For PDF
                     continue
-                
-                else:
+
+                if ext.lower() in VALIDITY:
                     image_file_name = path + '/' + f #Full /dir/path/filename.extension
                     
                     degrees = self.get_rotation_info(image_file_name)
+                    print(degrees)
                     if degrees:
                         self.fix_dpi_and_rotation(image_file_name, degrees, ext)
 
@@ -139,11 +140,14 @@ class saram(object):
                 filename = ''.join(e for e in filename if e.isalnum() or e == '-') #Join string of filename if it contains alphanumeric characters or -
                 text_file_path = directory_path + filename #Join dir_path with file_name
 
+                if ext.lower() not in VALIDITY: #Convert to lowercase and check in validity list          
+                    other_files += 1 #Increment if other than validity extension found
+                    continue
+
                 if count == 0: #No directory created
                     self.create_directory(directory_path) #function to create directory
                 count += 1
 
-                #self.img_run(image_file_name, text_file_path)
                 if ext.lower() == ".pdf": #For PDF
                     continue
 
