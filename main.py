@@ -68,7 +68,7 @@ class saram(object):
             except AttributeError as e:
                 print("Update Wand library: %s" % e)
 
-            img_buf = path + '/' + filename + str(page) + ".png"
+            img_buf = path + '/' + "saram_" + filename + str(page) + ".png"
             img_per_page.save(filename=img_buf)
 
             page_start = time.time()
@@ -149,7 +149,11 @@ class saram(object):
                     call(["tesseract", image_file_name, text_file_path], stdout=FNULL) #Fetch tesseract with FNULL in write mode
 
                 print(str(count) + (" file" if count == 1 else " files") + " processed")
-                
+            
+            for f in os.listdir(path):
+                 if f.startswith("saram_"):
+                      os.remove(os.path.join(path, f))
+
             if count + other_files == 0:
                 print("No files found") #No files found
             else :
