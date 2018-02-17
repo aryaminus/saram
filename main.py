@@ -49,7 +49,7 @@ class saram(object):
     
     def pdf_run(self, image_file_name, filename):
         
-        image_pdf = Image(filename=image_file_name) #take filename
+        image_pdf = Image(filename=image_file_name, resolution=300) #take filename
         image_page = image_pdf.convert("png") #png conversion
 
         page = 1 #init page
