@@ -152,10 +152,12 @@ class saram(object):
                     continue
 
                 else:
+                    """
                     degrees = self.get_rotation_info(image_file_name)
 
                     if degrees:
                         self.fix_dpi_and_rotation(image_file_name, degrees, ext)
+                    """
                     
                     call(["tesseract", image_file_name, text_file_path], stdout=FNULL) #Fetch tesseract with FNULL in write mode
 
