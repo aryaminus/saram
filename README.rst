@@ -1,7 +1,7 @@
-Dexter
+saram
 --------
 
 To use (with caution), simply do::
 
-    >>> import dexter
-    >>> dexter <dirname>
+    >>> import saram
+    >>> saram <dirname>

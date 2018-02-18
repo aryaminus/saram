@@ -20,7 +20,7 @@ class ArgumentMissingException(Exception):
         print("usage: {} <dirname>".format(sys.argv[0]))
         sys.exit(1)
 
-class dexter(object):
+class saram(object):
     
     def __init__(self):
         
@@ -70,7 +70,7 @@ class dexter(object):
             except AttributeError as e:
                 print("Update Wand library: %s" % e)
 
-            img_buf = path + '/' + "dexter_" + filename + str(page) + ".png"
+            img_buf = path + '/' + "saram_" + filename + str(page) + ".png"
             img_per_page.save(filename=img_buf)
 
             page_start = time.time()
@@ -164,7 +164,7 @@ class dexter(object):
                 print(str(count) + (" file" if count == 1 else " files") + " processed")
             
             for f in os.listdir(path):
-                 if f.startswith("dexter_"):
+                 if f.startswith("saram_"):
                     os.remove(os.path.join(path, f))
 
             if count + other_files == 0:
