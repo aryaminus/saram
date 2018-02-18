@@ -8,7 +8,7 @@ def readme():
 setup(
   name = 'saram',
   packages = ['saram'], # this must be the same as the name above
-  version = '0.1',
+  version = '0.2',
   description = 'A library to fetch images from a directory and fetch OCR from it with orientation rotation and pdf support',
   long_description = readme(),
   author = 'Sunim Acharya',
@@ -17,7 +17,7 @@ setup(
   keywords = ['ocr', 'image', 'pdf'], # arbitrary keywords
   classifiers = [],
   install_requires=[
-        'io','os','subprocess','sys','time','PIL','pyocr','wand'
+        'setuptools', 'Pillow', 'pyocr', 'Wand'
   ],
   include_package_data=True,
   zip_safe=False
