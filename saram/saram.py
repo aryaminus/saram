@@ -53,7 +53,7 @@ class saram(object):
         if not os.path.exists(path): #No path
 	        os.makedirs(path) #Create path
     
-    def pdf_run(self, image_file_name, filename):
+    def pdf_run(self, image_file_name, filename, path):
         
         image_pdf = Image(filename=image_file_name, resolution=300) #take filename
         image_page = image_pdf.convert("png") #png conversion
@@ -75,12 +75,12 @@ class saram(object):
                 print("Update Wand library: %s" % e)
 
             img_buf = path + '/' + "saram_" + filename + str(page) + ".png"
+
+            os.chmod(path, 0o777)
             img_per_page.save(filename=img_buf)
 
             page_start = time.time()
-
             page_elaboration = time.time() - page_start
-
             print("page %s - size %s - process %2d sec." % (page, img_per_page.size, page_elaboration))
                 
             page += 1
@@ -108,6 +108,7 @@ class saram(object):
         
     def main(self, path):
         if bool(os.path.exists(path)):
+
             directory_path = path + '/OCR-text/' #Create text_conversion folder
             count = 0
             other_files = 0
@@ -119,7 +120,7 @@ class saram(object):
                     image_file_name = path + '/' + f #Full /dir/path/filename.extension
                     filename = os.path.splitext(f)[0] #Filename without extension
                     filename = ''.join(e for e in filename if e.isalnum() or e == '-') #Join string of filename if it contains alphanumeric characters or -
-                    self.pdf_run(image_file_name, filename)
+                    self.pdf_run(image_file_name, filename, path)
 
             for f in os.listdir(path):
                 ext = os.path.splitext(f)[1] #Split the pathname path into a pair i.e take .png/ .jpg etc
@@ -155,14 +156,12 @@ class saram(object):
                 if ext.lower() == ".pdf": #For PDF
                     continue
 
-                else:
-                    """
+                else:                    
                     degrees = self.get_rotation_info(image_file_name)
 
                     if degrees:
                         self.fix_dpi_and_rotation(image_file_name, degrees, ext)
-                    """
-                    
+                                        
                     call(["tesseract", image_file_name, text_file_path], stdout=FNULL) #Fetch tesseract with FNULL in write mode
 
                 print(str(count) + (" file" if count == 1 else " files") + " processed")

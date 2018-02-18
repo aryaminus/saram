@@ -2,13 +2,13 @@
 from setuptools import setup
 
 def readme():
-    with open('README.rst') as f:
+    with open('README.md') as f:
         return f.read()
 
 setup(
     name = 'saram',
     packages = ['saram'], # this must be the same as the name above
-    version = '0.5',
+    version = '0.8.1',
     description = 'A library to fetch images from a directory and fetch OCR from it with orientation rotation and pdf support',
     long_description = readme(),
     author = 'Sunim Acharya',
@@ -21,7 +21,6 @@ setup(
     ],
     include_package_data=True,
     zip_safe=False,
-    scripts=['bin/saram'],
     entry_points={
     'console_scripts': [
         'saram = saram.saram:start'
