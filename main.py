@@ -20,7 +20,7 @@ class ArgumentMissingException(Exception):
         print("usage: {} <dirname>".format(sys.argv[0]))
         sys.exit(1)
 
-class saram(object):
+class dexter(object):
     
     def __init__(self):
         
@@ -70,7 +70,7 @@ class saram(object):
             except AttributeError as e:
                 print("Update Wand library: %s" % e)
 
-            img_buf = path + '/' + "saram_" + filename + str(page) + ".png"
+            img_buf = path + '/' + "dexter_" + filename + str(page) + ".png"
             img_per_page.save(filename=img_buf)
 
             page_start = time.time()
@@ -164,7 +164,7 @@ class saram(object):
                 print(str(count) + (" file" if count == 1 else " files") + " processed")
             
             for f in os.listdir(path):
-                 if f.startswith("saram_"):
+                 if f.startswith("dexter_"):
                     os.remove(os.path.join(path, f))
 
             if count + other_files == 0:
@@ -179,5 +179,5 @@ if __name__ == '__main__': #Execute all code before reading source file, ie. exe
         raise ArgumentMissingException
     path = sys.argv[1] #python main.py "path_to/img_dir" ie the argv[1] value
     path = os.path.abspath(path) #Accesing filesystem for Return a normalized absolutized version of the pathname path
-    s = saram()
+    s = dexter()
     s.main(path) # Def main to path
