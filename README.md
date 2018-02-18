@@ -3,7 +3,7 @@ Get OCR in txt form from an image or pdf extension supporting multiple files fro
 
 **Currently in alpha state**
 
-[![Srijana features](https://i.imgur.com/FDGpiwp.gif)](https://youtu.be/Cpj3XVdsK_g)
+[![Saram features](https://i.imgur.com/M9dAwPq.gif)](https://i.imgur.com/M9dAwPq.gif)
 
 **Note:**
 Mkae sure you have a OCR tool like `tesseract` and certain data value for comparing OCR, eg `tesseract-data-eng` along with `Pillow` and `Wand` for image conversion and loading which will be fetched during pip install
@@ -21,6 +21,7 @@ Clone the source locally:
 ```
 $ git clone https://github.com/aryaminus/saram
 $ cd saram
+$ git checkout py-module
 $ python main.py <dirname>
 ```
 
