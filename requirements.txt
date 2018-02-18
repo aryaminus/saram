@@ -1,0 +1,4 @@
+Wand==0.4.4
+setuptools==38.5.1
+pyocr==0.5
+Pillow==5.0.0
