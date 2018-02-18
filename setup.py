@@ -10,4 +10,7 @@ setup(
   download_url = 'https://github.com/aryaminus/dexter/archive/0.1.tar.gz', # I'll explain this in a second
   keywords = ['ocr', 'image', 'pdf'], # arbitrary keywords
   classifiers = [],
+        install_requires=[
+          'io','os','subprocess','sys','time','PIL','pyocr','wand'
+      ],
 )
