@@ -1,4 +1,4 @@
-# saram - Image/PDF OCR conversion
+# Saram - Image/PDF OCR conversion
 Get OCR in txt form from an image or pdf extension supporting multiple files from directory using `pytesseract` with support for rotation in case of wrong orientation along.
 
 **Currently in alpha state**
@@ -6,7 +6,7 @@ Get OCR in txt form from an image or pdf extension supporting multiple files fro
 [![Saram features](https://i.imgur.com/M9dAwPq.gif)](https://i.imgur.com/M9dAwPq.gif)
 
 **Note:**
-Mkae sure you have a OCR tool like `tesseract` and certain data value for comparing OCR, eg `tesseract-data-eng` along with `Pillow` and `Wand` for image conversion and loading which will be fetched during pip install
+Make sure you have a OCR tool like `tesseract` and certain data value for comparing OCR, eg `tesseract-data-eng` along with `Pillow` and `Wand` for image conversion and loading which will be fetched during pip install
 
 ## Installation
 
