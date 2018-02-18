@@ -8,7 +8,7 @@ def readme():
 setup(
     name = 'saram',
     packages = ['saram'], # this must be the same as the name above
-    version = '0.8.2',
+    version = '1.0.1',
     description = 'A library to fetch images from a directory and get OCR and store in txt with orientation rotation check and pdf support.',
     long_description = readme(),
     author = 'Sunim Acharya',
