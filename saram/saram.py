@@ -15,6 +15,8 @@ VALIDITY = [".jpg",".gif",".png",".tga",".tif",".bmp", ".pdf"]
 
 FNULL = open(os.devnull, 'w') #Open file in write mode to The file path of the null device. For example: '/dev/null' 
 
+path = ""
+
 class ArgumentMissingException(Exception):
     def __init__(self):
         print("usage: {} <dirname>".format(sys.argv[0]))
@@ -22,9 +24,11 @@ class ArgumentMissingException(Exception):
 
 class saram(object):
     
-    def __init__(self):
+    def __init__(self, path):
         
         ocr_language = 'eng'
+        
+        path = path
 
         #if call(['which', 'tesseract']): #Run the command described by args
         #    print("tesseract-ocr missing") #No tesseract installed
@@ -179,5 +183,5 @@ def start():
         raise ArgumentMissingException
     path = sys.argv[1] #python main.py "path_to/img_dir" ie the argv[1] value
     path = os.path.abspath(path) #Accesing filesystem for Return a normalized absolutized version of the pathname path
-    s = saram()
+    s = saram(path)
     s.main(path) # Def main to path
