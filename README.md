@@ -15,7 +15,7 @@ Refer to the <a href="https://github.com/aryaminus/saram/tree/py-module" target=
 
 Install using PIP:
 ```
-$ sudo pip install pahelee
+$ sudo pip install saram
 $ saram <dirname>
 ```
 ***else***
