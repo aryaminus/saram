@@ -8,7 +8,7 @@ def readme():
 setup(
     name = 'saram',
     packages = ['saram'], # this must be the same as the name above
-    version = '1.0.1',
+    version = '1.0.2',
     description = 'A library to fetch images from a directory and get OCR and store in txt with orientation rotation check and pdf support.',
     long_description = readme(),
     author = 'Sunim Acharya',
@@ -17,7 +17,7 @@ setup(
     keywords = ['ocr', 'image', 'pdf'], # arbitrary keywords
     classifiers = [],
     install_requires=[
-        'setuptools', 'pillow', 'pyocr', 'wand' ,'tesseract', 'tesseract-data-eng'
+        'setuptools', 'pillow', 'pyocr', 'wand' ,'tesseract'
     ],
     include_package_data=True,
     zip_safe=False,
