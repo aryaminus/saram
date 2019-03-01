@@ -1,9 +1,7 @@
-import io
 import os
 import subprocess
 import sys
 import time
-from subprocess import call
 
 import PIL.Image as Im
 import pyocr
@@ -162,7 +160,7 @@ class saram(object):
                     if degrees:
                         self.fix_dpi_and_rotation(image_file_name, degrees, ext)
                                         
-                    call(["tesseract", image_file_name, text_file_path], stdout=FNULL) #Fetch tesseract with FNULL in write mode
+                    subprocess.call(["tesseract", image_file_name, text_file_path], stdout=FNULL) #Fetch tesseract with FNULL in write mode
 
                 print(str(count) + (" file" if count == 1 else " files") + " processed")
             
