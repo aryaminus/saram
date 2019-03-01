@@ -17,7 +17,7 @@ Refer to the <a href="https://github.com/aryaminus/saram/tree/py-module" target=
 
 Install using PIP:
 ```
-$ sudo pip install saram
+$ pip install saram
 $ saram <dirname>
 ```
 ***else***
